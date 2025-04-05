@@ -101,8 +101,24 @@ app.get('/:shortUrl', async (req, res) => {
 
 checkDbConnection();
 
+const deleteOldUrls = async () => {
+  try {
+    // ลบข้อมูลที่มี `created_at` เกิน 1 วัน
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); // เวลาหนึ่งวันที่ผ่านมา
+    await db('urls').where('created_at', '<', oneDayAgo).del();
+    console.log('Old URLs deleted successfully');
+  } catch (err) {
+    console.error('Error deleting old URLs:', err);
+  }
+};
+
+// เรียกใช้ทุก ๆ 24 ชั่วโมง (หรือทุก ๆ ช่วงเวลาที่คุณต้องการ)
+setInterval(deleteOldUrls, 24 * 60 * 60 * 1000); // 24 ชั่วโมง
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(port, async () => {
+  console.log(`Server running at ${port}`);
+  // ลบข้อมูลที่เกิน 1 วันเมื่อเริ่มเซิร์ฟเวอร์
+  await deleteOldUrls();
 });
+
