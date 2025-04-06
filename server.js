@@ -15,7 +15,7 @@ const db = knex({
   connection: {
     host: 'aws-0-ap-southeast-1.pooler.supabase.com', 
     user: 'postgres.qxnfijwnsbzkpamowzgz', 
-    password: '-----------',
+    password: 'nopparut23X',
     database: 'postgres', 
     port: 6543, 
   }
@@ -103,14 +103,14 @@ checkDbConnection();
 
 const deleteOldUrls = async () => {
   try {
-    // ลบข้อมูลที่มี `created_at` เกิน 1 วัน
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); // เวลาหนึ่งวันที่ผ่านมา
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     await db('urls').where('created_at', '<', oneDayAgo).del();
     console.log('Old URLs deleted successfully');
   } catch (err) {
     console.error('Error deleting old URLs:', err);
   }
 };
+
 
 // เรียกใช้ทุก ๆ 24 ชั่วโมง (หรือทุก ๆ ช่วงเวลาที่คุณต้องการ)
 setInterval(deleteOldUrls, 24 * 60 * 60 * 1000); // 24 ชั่วโมง
